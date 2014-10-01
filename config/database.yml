@@ -15,7 +15,7 @@ development:
 test:
   adapter: postgresql
   encoding: utf8
-  database: app_test
+  database: app_for_test
   username: dmitrynazarenko
   host: localhost
   
