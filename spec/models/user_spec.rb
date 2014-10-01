@@ -7,9 +7,9 @@ describe User do
 
   subject{ @user}
 
-  it {should respond_to(:name)}
-  it {should respond_to(:email)}
-  it {should respond_to(:password_digest)}
+  it { should respond_to(:name) }
+  it { should respond_to(:email) }
+  it { should respond_to(:password_digest) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
   it { should respond_to(:authenticate) }
@@ -32,7 +32,7 @@ describe User do
 
   describe "When email format is invalid" do
     it "should be invalid" do
-      addresses = %w[user@foo,com user_at_roo.org example.user@foo.foo@bar_baz.com foo@bar+bas.com .@.]
+      addresses = %w[user@foo,com user_at_roo.org example.user@foo.foo@bar_baz.com foo@bar+bas.com .@. foo@bar..com]
       addresses.each do |invalid_address|
         @user.email = invalid_address
         expect(@user).not_to be_valid
@@ -42,7 +42,7 @@ describe User do
 
   describe "When email is valid" do
     it "should be valid" do
-      addresses = %w[user@foo.com user_at_roo@s.org example.user@foo.foo foo@bar.com]
+      addresses = %w[user@foo.com user_at_roo@s.org example.user@foo.foo foo@bar.com edu@edu.hse.ru]
       addresses.each do |invalid_address|
         @user.email = invalid_address
         expect(@user).to be_valid
