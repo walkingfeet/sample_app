@@ -10,6 +10,16 @@ describe "Static pages" do
     it { should have_content('Sample App') }
     it { should have_title(full_title('')) }
     it { should_not have_title('| Home') }
+    
+    describe "Header" do
+      
+      it { should have_link('Home', href: root_path) }
+      it { should have_link('Help', href: help_path) }
+      it { should have_link('Sign in', href: signin_path) }
+      it { should_not have_content('Profile') }
+      it { should_not have_content('Settings')}
+      it { should_not have_link('Users', href: users_path) }
+    end
   end
 
   describe "Help page" do

@@ -3,7 +3,27 @@ require 'spec_helper'
 describe "UserPages" do
   subject { page }
   
-   describe "index" do
+  describe "user actions" do
+       let(:user) { FactoryGirl.create(:user) }
+       let(:params) do {user: { name: "Name", email: "example@ex.com", 
+               password: "foobar", password_confirmation: "foobar" }  } end
+       
+       before { sign_in user, no_capybara: true }
+       
+      context "Create a user" do
+        before { post users_path, params  }
+        specify { expect(response).to redirect_to(root_url) }
+      end
+       
+       context "Sign Up" do
+         before{ get new_user_path }
+         specify { expect(response).to redirect_to(root_url) }
+      end
+      
+     
+  end
+  
+  describe "index" do
     before do
       sign_in FactoryGirl.create(:user)
       FactoryGirl.create(:user, name: "Bob", email: "bob@example.com")
@@ -45,12 +65,20 @@ describe "UserPages" do
             click_link('delete', match: :first)
           end.to change(User, :count).by(-1)
         end
+        
         it { should_not have_link('delete', href: user_path(admin)) }
       end
     end
+    
+    describe "destroy himself" do
+      let(:admin) { FactoryGirl.create(:admin) }
+      before {
+            sign_in admin, no_capybara: true
+            delete user_path(admin)
+          }
+          specify { expect(response).to redirect_to(root_url) }
+        end
   end
-  
-  
   
   
   describe "signup page" do
@@ -70,7 +98,7 @@ describe "UserPages" do
         fill_in "Name",         with: "Example User"
         fill_in "Email",        with: "user@example.com"
         fill_in "Password",     with: "foobar"
-        fill_in "Confirmation", with: "foobar"
+        fill_in "Confirm Password", with: "foobar"
       end
 
       it "should create a user" do
@@ -131,6 +159,20 @@ describe "UserPages" do
       specify { expect(user.reload.name).to eq new_name }
       specify { expect(user.reload.email).to eq new_email }
     end
+    
+    describe "forbidden attributes" do
+      let(:params) do 
+        {user: { name: user.name, email: user.email, 
+        admin: true, password: user.password, password_confirmation: user.password} } end
+      before do
+        sign_in user, no_capybara: true
+        patch user_path(user), params
+      end
+       specify { expect(user.reload).not_to be_admin }
+    end
+    
+   
+
   end
   
 

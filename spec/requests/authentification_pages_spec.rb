@@ -28,11 +28,7 @@ describe "Authentication" do
 
       describe "with valid information" do
         let(:user) { FactoryGirl.create(:user) }
-        before do
-          fill_in "Email",    with: user.email.upcase
-          fill_in "Password", with: user.password
-          click_button "Sign in"
-        end
+        before { sign_in user }
 
         it { should have_title(user.name) }
         it { should have_link('Users',       href: users_path) }
@@ -56,14 +52,10 @@ describe "Authentication" do
       let(:user) { FactoryGirl.create(:user) }
       
       describe "when attempting to visit a protected page" do
-        before do
-          visit edit_user_path(user)
-          fill_in "Email", with: user.email
-          fill_in "Password", with: user.password
-          click_button "Sign in"
-        end
+        before { visit edit_user_path(user) }
         
       describe "after signing in" do
+        before { sign_in user }
         
         it "should render the desired protected page" do
           expect(page).to have_title('Edit user')
@@ -74,7 +66,7 @@ describe "Authentication" do
       describe "in the Users controller" do
         
         describe "visiting the edit page" do
-          before {visit edit_user_path(user) }
+          before { visit edit_user_path(user) }
           it { should have_title('Sign in') }
         end
         
